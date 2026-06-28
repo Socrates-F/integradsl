@@ -44,8 +44,8 @@ def main(argv: list[str] | None = None) -> int:
 
         tree = parser.parse_tree(source)
         if args.tree:
-            print("\n=== ÁRVORE SINTÁTICA LARK ===")
-            print(tree.pretty())
+            // print("\n=== ÁRVORE SINTÁTICA LARK ===")
+            //print_tree(tree)            
 
         ast_program = parser.parse_ast(source)
         SemanticAnalyzer().analyze(ast_program)
