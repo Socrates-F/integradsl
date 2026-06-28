@@ -1,0 +1,24 @@
+# Exemplo com validação de e-mail e regras de qualidade de dados.
+
+fluxo "Validar usuarios" {
+    carregar resposta de arquivo "../data/usuarios.json"
+    extrair usuarios = resposta.usuarios
+
+    para cada usuario em usuarios {
+        validar usuario.id obrigatorio
+        validar usuario.email formato_email
+        validar usuario.idade maior_que 17
+
+        se erro {
+            registrar "Usuário rejeitado por inconsistência cadastral."
+            salvar_erro usuario.id
+            continuar
+        }
+
+        definir usuario.status = "aprovado"
+        salvar usuario em "usuarios_validados"
+        enviar POST "mock://crm/usuarios" com usuario
+    }
+
+    relatorio "relatorio_validacao_usuarios.json"
+}

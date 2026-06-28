@@ -1,0 +1,36 @@
+# Exemplo principal: fluxo offline, executável sem depender de internet.
+# Simula uma integração entre um arquivo de pedidos, validações, banco lógico e um ERP mock.
+
+fluxo "Sincronizar pedidos locais" {
+    configurar ambiente = "homologacao"
+
+    carregar resposta de arquivo "../data/pedidos.json"
+    extrair pedidos = resposta.carts
+
+    para cada pedido em pedidos {
+        validar pedido.id obrigatorio
+        validar pedido.total maior_que 0
+
+        se erro {
+            registrar "Pedido inválido encontrado; envio cancelado."
+            salvar_erro pedido.id
+            continuar
+        }
+
+        se pedido.total > 1000 {
+            definir pedido.prioridade = "alta"
+        } senao {
+            definir pedido.prioridade = "normal"
+        }
+
+        salvar pedido em "pedidos_integrados"
+        enviar POST "mock://erp/pedidos" com pedido
+
+        se erro {
+            registrar "Falha no envio do pedido para o ERP."
+            salvar_erro pedido.id
+        }
+    }
+
+    relatorio "relatorio_sincronizacao_pedidos.json"
+}

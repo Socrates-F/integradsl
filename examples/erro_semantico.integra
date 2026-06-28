@@ -1,0 +1,5 @@
+
+fluxo "Erro Semantico" {
+    extrair pedidos = resposta.carts
+    relatorio "erro_semantico.json"
+}

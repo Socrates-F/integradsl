@@ -1,0 +1,8 @@
+fluxo "Erro Sintatico" {
+    configurar ambiente = "teste"
+    carregar resposta de arquivo "../data/pedidos.json"
+    extrair pedidos = resposta.carts
+
+    para cada pedido em pedidos {
+        validar pedido.id obrigatorio
+}

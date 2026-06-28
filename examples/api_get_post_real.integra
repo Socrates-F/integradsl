@@ -1,0 +1,23 @@
+
+fluxo "Testar GET e POST Real" {
+    buscar resposta de GET "https://dummyjson.com/carts"
+    extrair pedidos = resposta.carts
+
+    para cada pedido em pedidos {
+        validar pedido.id obrigatorio
+        validar pedido.total maior_que 0
+
+        se erro {
+            registrar "Pedido inválido vindo da API."
+            salvar_erro pedido.id
+            continuar
+        }
+
+        definir pedido.origem = "api_externa"
+
+        salvar pedido em "pedidos_post_real"
+        enviar POST "https://httpbin.org/post" com pedido
+    }
+
+    relatorio "relatorio_get_post_real.json"
+}

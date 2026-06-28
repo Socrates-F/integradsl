@@ -1,0 +1,28 @@
+{
+  "carts": [
+    {
+      "id": 101,
+      "cliente": {"nome": "Restaurante Sol", "email": "compras@sol.com"},
+      "total": 1250.75,
+      "itens": 8
+    },
+    {
+      "id": 102,
+      "cliente": {"nome": "Pizzaria Lua", "email": "contato@lua.com"},
+      "total": 430.0,
+      "itens": 3
+    },
+    {
+      "id": 103,
+      "cliente": {"nome": "Café Recife", "email": "financeiro@caferecife.com"},
+      "total": 0,
+      "itens": 1
+    },
+    {
+      "id": 104,
+      "cliente": {"nome": "Mercado Central", "email": "pedido@central.com"},
+      "total": 2320.5,
+      "itens": 15
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+// IntegraDSL - Gramática formal em Lark
+// Linguagem para automação de integrações operacionais.
+
+start: fluxo
+
+fluxo: "fluxo" STRING bloco
+
+bloco: "{" comando* "}"
+
+?comando: configurar
+        | carregar_arquivo
+        | buscar
+        | extrair
+        | repeticao
+        | condicional
+        | validar
+        | definir
+        | salvar
+        | enviar
+        | registrar
+        | salvar_erro
+        | relatorio
+        | continuar
+
+configurar: "configurar" NAME "=" valor
+
+carregar_arquivo: "carregar" NAME "de" "arquivo" STRING
+buscar: "buscar" NAME "de" METODO STRING
+extrair: "extrair" NAME "=" caminho
+
+repeticao: "para" "cada" NAME "em" caminho bloco
+condicional: "se" condicao bloco ("senao" bloco)?
+
+validar: "validar" caminho regra
+definir: "definir" caminho "=" valor
+salvar: "salvar" caminho "em" STRING
+enviar: "enviar" METODO STRING "com" caminho
+registrar: "registrar" STRING
+salvar_erro: "salvar_erro" caminho
+relatorio: "relatorio" STRING
+continuar: "continuar"
+
+?condicao: "erro"                  -> cond_erro
+        | operando OPERADOR operando -> cond_comparacao
+
+?operando: caminho | valor
+
+?valor: STRING        -> string
+      | SIGNED_NUMBER -> number
+      | TRUE          -> true
+      | FALSE         -> false
+
+regra: "obrigatorio"              -> regra_obrigatorio
+     | "formato_email"            -> regra_email
+     | "maior_que" valor          -> regra_maior
+     | "menor_que" valor          -> regra_menor
+     | "igual" valor              -> regra_igual
+
+caminho: NAME ("." NAME)*
+
+METODO.2: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+TRUE: "verdadeiro" | "true"
+FALSE: "falso" | "false"
+OPERADOR: ">=" | "<=" | "==" | "!=" | ">" | "<"
+
+COMMENT: /#[^\n]*/
+
+%import common.CNAME -> NAME
+%import common.ESCAPED_STRING -> STRING
+%import common.SIGNED_NUMBER
+%import common.WS
+%ignore WS
+%ignore COMMENT

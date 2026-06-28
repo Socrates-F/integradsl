@@ -1,0 +1,29 @@
+# Exemplo opcional com API pública. Depende de internet no ambiente de execução.
+# Caso queira uma demonstração sempre estável, use sincronizar_pedidos.integra.
+
+fluxo "Consumir API pública de carrinhos" {
+    buscar resposta de GET "https://dummyjson.com/carts"
+    extrair pedidos = resposta.carts
+
+    para cada pedido em pedidos {
+        validar pedido.id obrigatorio
+        validar pedido.total maior_que 0
+
+        se erro {
+            registrar "Pedido recebido da API pública é inválido."
+            salvar_erro pedido.id
+            continuar
+        }
+
+        se pedido.total > 1000 {
+            definir pedido.prioridade = "alta"
+        } senao {
+            definir pedido.prioridade = "normal"
+        }
+
+        salvar pedido em "pedidos_api_publica"
+        enviar POST "mock://erp/pedidos" com pedido
+    }
+
+    relatorio "relatorio_api_publica.json"
+}
