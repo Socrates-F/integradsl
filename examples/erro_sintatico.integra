@@ -5,4 +5,5 @@ fluxo "Erro Sintatico" {
 
     para cada pedido em pedidos {
         validar pedido.id obrigatorio
+    }
 }
