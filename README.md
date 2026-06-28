@@ -2,68 +2,262 @@
 
 **IntegraDSL** é uma linguagem de domínio específico, implementada com **Python** e **Lark**, criada para automatizar fluxos repetitivos de integração entre sistemas.
 
-A linguagem permite descrever tarefas comuns de estágio/trabalho em computação, como:
+A linguagem permite descrever, em uma sintaxe própria, tarefas comuns em estágios e no mercado de computação, como:
 
-- carregar dados de arquivos JSON;
-- consumir APIs;
-- validar campos obrigatórios;
-- aplicar regras de negócio;
-- transformar registros;
-- salvar dados em uma base lógica;
-- enviar dados para outro sistema;
-- tratar erros;
-- gerar relatório final de execução.
+* carregar dados de arquivos JSON;
+* consumir APIs externas;
+* validar campos obrigatórios;
+* aplicar regras de negócio;
+* transformar registros;
+* salvar dados em uma base lógica em memória;
+* enviar dados para outro sistema;
+* tratar erros;
+* gerar relatórios finais de execução.
 
-O projeto foi estruturado seguindo a organização típica de um compilador/interpretador: gramática formal, análise léxica, análise sintática, geração de árvore sintática, construção de AST, análise semântica, tradução orientada à sintaxe e interpretação.
+O projeto foi desenvolvido seguindo a estrutura típica de um compilador/interpretador: **gramática formal**, **análise léxica**, **análise sintática**, **geração de árvore sintática**, **construção de AST**, **análise semântica**, **tradução orientada à sintaxe** e **interpretação**.
 
 ---
 
 ## Equipe
 
-- Carlos Clistenes Bezerra Lira
-- Integrante 2: preencher, se houver
-- Integrante 3: preencher, se houver
+* Claudio Roberto
+* Eduardo José
+* Erasmo Quixabeira
+* Sócrates Farias
+
 
 ---
 
 ## Motivação
 
-Em estágios e ambientes reais de desenvolvimento, é comum encontrar tarefas repetitivas envolvendo integração entre sistemas. Por exemplo:
+Em ambientes reais de desenvolvimento, é comum encontrar tarefas repetitivas relacionadas à integração entre sistemas. Por exemplo:
 
-> Buscar pedidos em uma API, validar se os campos estão corretos, transformar os dados, enviar para um ERP, registrar erros e gerar um relatório final.
+> Buscar pedidos em uma API, validar campos obrigatórios, transformar os dados, enviar para um ERP, registrar erros e gerar um relatório final.
 
-Normalmente, esse tipo de automação exige escrever scripts Python repetitivos, com muito código de requisição HTTP, validação, laços, tratamento de erro e geração de logs.
+Normalmente, esse tipo de automação é feito com scripts Python repetitivos, contendo muito código de requisição HTTP, validação, laços, condicionais, tratamento de erro e geração de logs.
 
-A proposta da **IntegraDSL** é permitir que esse fluxo seja descrito de forma mais próxima da linguagem do problema, reduzindo a repetição e tornando a intenção do processo mais clara.
+A proposta da **IntegraDSL** é permitir que esse fluxo seja descrito por meio de uma linguagem mais próxima do domínio do problema, tornando a automação mais legível e reduzindo a complexidade de escrever scripts repetitivos.
 
 ---
 
 ## Descrição informal da linguagem
 
-A IntegraDSL descreve um **fluxo de integração**. Um fluxo é formado por comandos, como:
+A IntegraDSL descreve um **fluxo de integração**. Todo programa começa com a palavra reservada `fluxo`, seguida de um nome e de um bloco de comandos.
 
-- `configurar`: cria uma variável de configuração;
-- `carregar`: carrega dados de um arquivo JSON local;
-- `buscar`: executa uma requisição HTTP;
-- `extrair`: extrai um campo de uma estrutura JSON;
-- `para cada`: percorre uma lista de registros;
-- `validar`: aplica uma regra de validação;
-- `se/senao`: executa comandos condicionalmente;
-- `definir`: cria ou altera um campo de um registro;
-- `salvar`: armazena o registro em uma base lógica em memória;
-- `enviar`: envia um registro para uma API ou endpoint mock;
-- `se erro`: verifica se o último comando gerou erro;
-- `salvar_erro`: registra uma falha associada a um identificador;
-- `continuar`: pula para a próxima iteração de um laço;
-- `relatorio`: gera um relatório JSON da execução.
+Exemplo mínimo:
 
-A linguagem é **interpretada**, mas também possui um tradutor didático que gera uma representação equivalente em Python.
+```txt
+fluxo "Demo" {
+    configurar ambiente = "teste"
+    relatorio "relatorio_demo.json"
+}
+```
+
+A linguagem possui comandos específicos para integração de dados:
+
+| Comando       | Função                                              |
+| ------------- | --------------------------------------------------- |
+| `configurar`  | cria uma variável de configuração                   |
+| `carregar`    | carrega dados de um arquivo JSON local              |
+| `buscar`      | executa uma requisição HTTP externa                 |
+| `extrair`     | extrai um campo de uma estrutura JSON               |
+| `para cada`   | percorre uma lista de registros                     |
+| `validar`     | aplica uma regra de validação                       |
+| `se/senao`    | executa comandos condicionalmente                   |
+| `se erro`     | verifica se o último comando gerou erro             |
+| `definir`     | cria ou altera um campo de um registro              |
+| `salvar`      | armazena um registro em uma base lógica em memória  |
+| `enviar`      | envia um registro para uma API ou endpoint simulado |
+| `registrar`   | adiciona uma mensagem aos logs                      |
+| `salvar_erro` | registra um erro associado a um identificador       |
+| `continuar`   | pula para a próxima iteração de um laço             |
+| `relatorio`   | gera um relatório JSON da execução                  |
+
+A IntegraDSL é uma linguagem **interpretada**, mas o projeto também possui um tradutor didático que exibe uma representação aproximada do programa em Python.
 
 ---
 
-## Exemplo de programa IntegraDSL
+## Estrutura do projeto
 
-Arquivo: `examples/sincronizar_pedidos.integra`
+```txt
+integradsl_project/
+├── README.md
+├── requirements.txt
+├── pyproject.toml
+├── .devcontainer/
+│   └── devcontainer.json
+├── data/
+│   ├── pedidos.json
+│   └── usuarios.json
+├── examples/
+│   ├── api_get_post_real.integra
+│   ├── api_real_opcional.integra
+│   ├── erro_semantico.integra
+│   ├── erro_sintatico.integra
+│   ├── sincronizar_pedidos.integra
+│   └── validar_usuarios.integra
+├── src/
+│   └── integradsl/
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── ast_nodes.py
+│       ├── cli.py
+│       ├── grammar.lark
+│       ├── interpreter.py
+│       ├── parser.py
+│       ├── semantic.py
+│       └── translator.py
+└── tests/
+    └── test_parser.py
+```
+
+---
+
+## Função dos principais arquivos
+
+| Arquivo          | Função                                      |
+| ---------------- | ------------------------------------------- |
+| `grammar.lark`   | define formalmente a gramática da linguagem |
+| `parser.py`      | cria o analisador léxico/sintático com Lark |
+| `ast_nodes.py`   | define os nós da AST                        |
+| `semantic.py`    | realiza a análise semântica                 |
+| `interpreter.py` | executa os programas escritos na DSL        |
+| `translator.py`  | gera uma tradução didática para Python      |
+| `cli.py`         | implementa a interface de linha de comando  |
+| `examples/`      | contém programas de exemplo da DSL          |
+| `data/`          | contém dados JSON usados nos testes offline |
+| `tests/`         | contém testes automatizados com Pytest      |
+
+---
+
+## Fluxo interno de execução
+
+O projeto segue as etapas clássicas de uma linguagem interpretada:
+
+```txt
+Arquivo .integra
+      ↓
+Análise léxica
+      ↓
+Tokens
+      ↓
+Análise sintática
+      ↓
+Árvore sintática do Lark
+      ↓
+AST própria
+      ↓
+Análise semântica
+      ↓
+Interpretador
+      ↓
+Relatório final
+```
+
+---
+
+## Instalação em máquina local
+
+### 1. Clonar ou baixar o projeto
+
+Entre na pasta do projeto:
+
+```bash
+cd integradsl_project
+```
+
+No Windows, por exemplo:
+
+```powershell
+cd C:\Users\seu_usuario\integradsl_project
+```
+
+### 2. Criar ambiente virtual
+
+#### Windows PowerShell
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+Se o PowerShell bloquear a ativação com erro de política de execução, rode:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.venv\Scripts\Activate.ps1
+```
+
+#### Windows CMD
+
+```cmd
+python -m venv .venv
+.venv\Scripts\activate.bat
+```
+
+#### Linux ou macOS
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Instalar dependências
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+```
+
+O comando `pip install -e .` instala o projeto em modo editável e permite usar o comando:
+
+```bash
+integradsl
+```
+
+---
+
+## Execução no GitHub Codespaces
+
+O projeto já possui a pasta `.devcontainer/`, permitindo uso no GitHub Codespaces.
+
+### Passos
+
+1. Suba o projeto para um repositório no GitHub.
+2. Abra o repositório no navegador.
+3. Clique em **Code**.
+4. Acesse a aba **Codespaces**.
+5. Clique em **Create codespace on main**.
+6. No terminal do Codespaces, execute:
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+```
+
+Depois rode o exemplo principal:
+
+```bash
+integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs
+```
+
+Caso prefira executar sem instalar o pacote em modo editável:
+
+```bash
+PYTHONPATH=src python -m integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs
+```
+
+---
+
+## Exemplo principal da linguagem
+
+Arquivo:
+
+```txt
+examples/sincronizar_pedidos.integra
+```
+
+Código:
 
 ```txt
 fluxo "Sincronizar pedidos locais" {
@@ -101,93 +295,33 @@ fluxo "Sincronizar pedidos locais" {
 }
 ```
 
-Esse programa faz o seguinte:
+Esse programa realiza o seguinte fluxo:
 
-1. Carrega pedidos de um arquivo JSON;
-2. Extrai a lista `resposta.carts` para a variável `pedidos`;
-3. Percorre cada pedido;
-4. Valida se o pedido possui `id` e `total > 0`;
-5. Se houver erro, registra a falha e pula para o próximo pedido;
-6. Define a prioridade como `alta` ou `normal`;
-7. Salva o pedido em uma base lógica;
-8. Envia o pedido para um endpoint mock;
-9. Gera um relatório JSON final.
+1. carrega pedidos de um arquivo JSON local;
+2. extrai a lista de pedidos;
+3. percorre cada pedido;
+4. valida os campos `id` e `total`;
+5. se houver erro, registra a falha e pula para o próximo item;
+6. define a prioridade como `alta` ou `normal`;
+7. salva o pedido em uma base lógica;
+8. simula o envio para um ERP;
+9. gera um relatório final em JSON.
 
 ---
 
-## Como executar no GitHub Codespaces
-
-O projeto foi preparado para rodar em ambiente Python. No Codespaces, basta abrir o terminal e executar:
+## Como executar o exemplo principal
 
 ```bash
-pip install -r requirements.txt
-pip install -e .
+integradsl examples/sincronizar_pedidos.integra --outdir outputs
 ```
 
-Depois, execute o exemplo principal:
-
-```bash
-integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs
-```
-
-Também é possível executar sem instalar o pacote em modo editável:
-
-```bash
-PYTHONPATH=src python -m integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs
-```
-
-No Windows PowerShell, use:
+No Windows PowerShell:
 
 ```powershell
-$env:PYTHONPATH="src"
-python -m integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs
+integradsl examples\sincronizar_pedidos.integra --outdir outputs
 ```
 
----
-
-## Comandos úteis
-
-Executar o programa normalmente:
-
-```bash
-integradsl examples/sincronizar_pedidos.integra --outdir outputs
-```
-
-Mostrar apenas a árvore sintática:
-
-```bash
-integradsl examples/sincronizar_pedidos.integra --tree --no-run
-```
-
-Mostrar os tokens reconhecidos pelo analisador léxico:
-
-```bash
-integradsl examples/sincronizar_pedidos.integra --tokens --no-run
-```
-
-Gerar uma tradução didática para Python:
-
-```bash
-integradsl examples/sincronizar_pedidos.integra --emit-python --no-run
-```
-
-Executar os testes automatizados:
-
-```bash
-PYTHONPATH=src pytest -q
-```
-
----
-
-## Saída esperada do exemplo principal
-
-Ao executar:
-
-```bash
-integradsl examples/sincronizar_pedidos.integra --outdir outputs
-```
-
-A saída esperada no terminal é semelhante a:
+Saída esperada:
 
 ```txt
 === EXECUÇÃO CONCLUÍDA ===
@@ -205,356 +339,536 @@ O relatório será gerado em:
 outputs/relatorio_sincronizacao_pedidos.json
 ```
 
-Esse relatório contém logs, erros, dados salvos na base lógica e envios realizados.
-
 ---
 
-## Estrutura do projeto
+## Testes e demonstrações possíveis
 
-```txt
-integradsl_project/
-├── README.md
-├── requirements.txt
-├── pyproject.toml
-├── .devcontainer/
-│   └── devcontainer.json
-├── data/
-│   ├── pedidos.json
-│   └── usuarios.json
-├── examples/
-│   ├── sincronizar_pedidos.integra
-│   ├── validar_usuarios.integra
-│   └── api_real_opcional.integra
-├── src/
-│   └── integradsl/
-│       ├── __init__.py
-│       ├── __main__.py
-│       ├── ast_nodes.py
-│       ├── cli.py
-│       ├── grammar.lark
-│       ├── interpreter.py
-│       ├── parser.py
-│       ├── semantic.py
-│       └── translator.py
-└── tests/
-    └── test_parser.py
+A tabela abaixo resume os principais testes que podem ser executados no projeto. Eles demonstram as etapas de análise léxica, análise sintática, tradução, interpretação, uso de API externa, geração de relatórios e tratamento de erros.
+
+> Nos comandos abaixo, em Windows use `examples\arquivo.integra`. Em Linux, macOS ou Codespaces use `examples/arquivo.integra`.
+
+| Teste                          | O que demonstra                                                                     | Comando                                                                                          |
+| ------------------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Ajuda da CLI                   | Mostra os parâmetros disponíveis no interpretador.                                  | `integradsl --help`                                                                              |
+| Execução principal offline     | Executa o fluxo de sincronização de pedidos usando arquivo JSON local.              | `integradsl examples/sincronizar_pedidos.integra --outdir outputs`                               |
+| Análise léxica                 | Exibe os tokens reconhecidos pelo Lark.                                             | `integradsl examples/sincronizar_pedidos.integra --tokens --no-run`                              |
+| Análise sintática              | Exibe a árvore sintática gerada pelo Lark.                                          | `integradsl examples/sincronizar_pedidos.integra --tree --no-run`                                |
+| Tradução para Python           | Mostra uma tradução didática da DSL para Python.                                    | `integradsl examples/sincronizar_pedidos.integra --emit-python --no-run`                         |
+| Teste completo                 | Mostra tokens, árvore sintática, tradução e executa o programa.                     | `integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs` |
+| Validação de usuários          | Executa outro fluxo da DSL, validando usuários, e-mails e idade.                    | `integradsl examples/validar_usuarios.integra --outdir outputs`                                  |
+| API externa real               | Consome a API pública `https://dummyjson.com/carts` e processa os dados retornados. | `integradsl examples/api_real_opcional.integra --outdir outputs`                                 |
+| Visualizar relatório principal | Formata o relatório JSON gerado pelo exemplo principal.                             | `python -m json.tool outputs/relatorio_sincronizacao_pedidos.json`                               |
+| Visualizar relatório da API    | Formata o relatório JSON gerado pelo exemplo com API externa.                       | `python -m json.tool outputs/relatorio_api_publica.json`                                         |
+| Testes automatizados           | Executa os testes automatizados do projeto com Pytest.                              | `pytest -q`                                                                                      |
+| Teste de erro sintático        | Verifica se o parser rejeita um programa com bloco mal fechado.                     | `integradsl examples/erro_sintatico.integra --tree --no-run`                                     |
+| Teste de erro semântico        | Verifica se a análise semântica detecta variável usada antes de ser definida.       | `integradsl examples/erro_semantico.integra --tree --no-run`                                     |
+
+### A seguir, segue as demais descrições dos testes para melhor visualização do escopo.
+
+### 1. Ajuda da CLI
+
+Mostra os parâmetros aceitos pelo interpretador.
+
+```bash
+integradsl --help
 ```
 
----
+Alternativa:
 
-## Estrutura típica de compilador usada no projeto
-
-O projeto foi organizado em etapas sistemáticas:
-
-| Etapa | Arquivo | Função |
-|---|---|---|
-| Definição formal da linguagem | `grammar.lark` | Define tokens e regras sintáticas |
-| Análise léxica | `parser.py` + Lark | Reconhece tokens como `fluxo`, `validar`, `se`, `POST`, `STRING`, `NUMBER` |
-| Análise sintática | `parser.py` + Lark | Gera a árvore sintática concreta |
-| Construção da AST | `parser.py` + `ast_nodes.py` | Converte a árvore do Lark em nós semânticos próprios |
-| Análise semântica | `semantic.py` | Verifica variáveis usadas antes da definição e uso correto de `continuar` |
-| Interpretação | `interpreter.py` | Executa o fluxo descrito pela DSL |
-| Tradução | `translator.py` | Gera uma versão didática em Python |
-| Interface de execução | `cli.py` | Permite rodar, mostrar tokens, árvore e tradução |
-
----
-
-## Definição léxica
-
-A linguagem reconhece os seguintes grupos léxicos:
-
-| Token | Exemplo | Descrição |
-|---|---|---|
-| Palavra-chave | `fluxo`, `validar`, `se`, `senao` | Comandos da linguagem |
-| Identificador | `pedido`, `resposta`, `total` | Nome de variável ou campo |
-| String | `"pedidos.json"` | Texto entre aspas |
-| Número | `1000`, `12.5` | Valores numéricos inteiros ou reais |
-| Método HTTP | `GET`, `POST`, `PUT`, `DELETE` | Métodos usados em integrações |
-| Operador | `>`, `<`, `>=`, `<=`, `==`, `!=` | Operadores de comparação |
-| Comentário | `# comentário` | Ignorado pelo analisador |
-
-Exemplo de tokens para um trecho da linguagem:
-
-```txt
-validar pedido.total maior_que 0
+```bash
+python -m integradsl --help
 ```
 
-Tokens reconhecidos:
+### 2. Teste de análise léxica
 
-```txt
-VALIDAR         validar
-NAME            pedido
-DOT             .
-NAME            total
-MAIOR_QUE       maior_que
-SIGNED_NUMBER   0
+Mostra os tokens reconhecidos pelo Lark.
+
+```bash
+integradsl examples/sincronizar_pedidos.integra --tokens --no-run
 ```
 
----
+No Windows:
 
-## Gramática formal resumida
-
-A gramática completa está em `src/integradsl/grammar.lark`.
-
-Resumo das principais regras:
-
-```txt
-start: fluxo
-
-fluxo: "fluxo" STRING bloco
-
-bloco: "{" comando* "}"
-
-comando: configurar
-       | carregar_arquivo
-       | buscar
-       | extrair
-       | repeticao
-       | condicional
-       | validar
-       | definir
-       | salvar
-       | enviar
-       | registrar
-       | salvar_erro
-       | relatorio
-       | continuar
-
-configurar: "configurar" NAME "=" valor
-carregar_arquivo: "carregar" NAME "de" "arquivo" STRING
-buscar: "buscar" NAME "de" METODO STRING
-extrair: "extrair" NAME "=" caminho
-
-repeticao: "para" "cada" NAME "em" caminho bloco
-condicional: "se" condicao bloco ("senao" bloco)?
-
-validar: "validar" caminho regra
-definir: "definir" caminho "=" valor
-salvar: "salvar" caminho "em" STRING
-enviar: "enviar" METODO STRING "com" caminho
-registrar: "registrar" STRING
-salvar_erro: "salvar_erro" caminho
-relatorio: "relatorio" STRING
-continuar: "continuar"
+```powershell
+integradsl examples\sincronizar_pedidos.integra --tokens --no-run
 ```
 
----
+Esse teste demonstra a etapa de **análise léxica**.
 
-## Semântica da linguagem
+### 3. Teste de análise sintática
 
-A semântica define o significado de cada comando:
-
-| Comando | Semântica |
-|---|---|
-| `fluxo` | Define o início de um programa IntegraDSL |
-| `configurar` | Armazena uma variável simples no ambiente |
-| `carregar` | Lê um arquivo JSON local e salva seu conteúdo em uma variável |
-| `buscar` | Executa uma requisição HTTP ou uma requisição mock |
-| `extrair` | Copia um campo de uma estrutura para uma nova variável |
-| `para cada` | Percorre uma lista de objetos |
-| `validar` | Aplica uma regra de validação e marca erro se falhar |
-| `se erro` | Executa o bloco se o último comando relevante produziu erro |
-| `se/senao` | Executa comandos de acordo com uma comparação |
-| `definir` | Cria ou altera um campo em um objeto |
-| `salvar` | Armazena o objeto em uma base lógica em memória |
-| `enviar` | Envia o objeto para um endpoint HTTP ou `mock://` |
-| `registrar` | Adiciona uma mensagem aos logs |
-| `salvar_erro` | Registra uma falha associada a uma referência |
-| `continuar` | Pula para a próxima iteração do laço |
-| `relatorio` | Gera um arquivo JSON com o resultado da execução |
-
----
-
-## Exemplos de estruturas novas além das linguagens básicas vistas em aula
-
-A IntegraDSL inclui estruturas voltadas ao domínio de integração de sistemas:
-
-1. **Comando de integração HTTP**
-
-```txt
-buscar resposta de GET "https://dummyjson.com/carts"
-enviar POST "mock://erp/pedidos" com pedido
-```
-
-2. **Validações declarativas de dados**
-
-```txt
-validar pedido.id obrigatorio
-validar pedido.total maior_que 0
-validar usuario.email formato_email
-```
-
-3. **Tratamento de erro orientado ao fluxo**
-
-```txt
-se erro {
-    registrar "Registro inválido."
-    salvar_erro pedido.id
-    continuar
-}
-```
-
-4. **Manipulação de caminhos em objetos JSON**
-
-```txt
-extrair pedidos = resposta.carts
-definir pedido.prioridade = "alta"
-```
-
-5. **Geração automática de relatório operacional**
-
-```txt
-relatorio "relatorio_sincronizacao_pedidos.json"
-```
-
-Essas estruturas tornam a linguagem mais específica e criativa do que uma linguagem apenas aritmética ou de comandos básicos.
-
----
-
-## Árvore sintática
-
-Executando:
+Mostra a árvore sintática concreta gerada pelo Lark.
 
 ```bash
 integradsl examples/sincronizar_pedidos.integra --tree --no-run
 ```
 
-Um trecho da árvore gerada pelo Lark será semelhante a:
+No Windows:
 
-```txt
-start
-  fluxo
-    "Sincronizar pedidos locais"
-    bloco
-      configurar
-        ambiente
-        string "homologacao"
-      carregar_arquivo
-        resposta
-        "../data/pedidos.json"
-      extrair
-        pedidos
-        caminho
-          resposta
-          carts
-      repeticao
-        pedido
-        caminho pedidos
-        bloco
-          validar
-            caminho
-              pedido
-              id
-            regra_obrigatorio
+```powershell
+integradsl examples\sincronizar_pedidos.integra --tree --no-run
 ```
 
-Isso demonstra a geração da árvore sintática exigida no projeto.
+Esse teste demonstra a etapa de **análise sintática** e a geração da árvore.
 
----
+### 4. Teste de tradução didática para Python
 
-## Tradução orientada à sintaxe
-
-Além do interpretador, o projeto possui um tradutor didático para Python.
-
-Execute:
+Mostra uma tradução aproximada do programa da DSL para Python.
 
 ```bash
 integradsl examples/sincronizar_pedidos.integra --emit-python --no-run
 ```
 
-Trecho da tradução:
+No Windows:
 
-```python
-state['env']['resposta'] = carregar_json('../data/pedidos.json')
-state['env']['pedidos'] = get_path('resposta.carts')
-for pedido in get_path('pedidos'):
-    state['env']['pedido'] = pedido
-    state['last_error'] = False
-    validar('pedido.id', regra='obrigatorio', argumento=None)
-    validar('pedido.total', regra='maior_que', argumento=0)
+```powershell
+integradsl examples\sincronizar_pedidos.integra --emit-python --no-run
 ```
 
-A tradução é didática: ela mostra a semântica do programa, mas a execução oficial é feita pelo interpretador em `interpreter.py`.
+Esse teste demonstra a presença de um **tradutor orientado à sintaxe**.
 
----
+### 5. Teste completo
 
-## Exemplos disponíveis
-
-### 1. `sincronizar_pedidos.integra`
-
-Exemplo principal, totalmente offline. Usa `data/pedidos.json` e endpoints `mock://`.
+Executa tokens, árvore, tradução e interpretação no mesmo comando.
 
 ```bash
-integradsl examples/sincronizar_pedidos.integra --outdir outputs
+integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs
 ```
 
-### 2. `validar_usuarios.integra`
+No Windows:
 
-Exemplo de validação de dados cadastrais com e-mail e idade mínima.
+```powershell
+integradsl examples\sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs
+```
+
+Esse é o comando mais indicado para demonstração do projeto.
+
+### 6. Teste com validação de usuários
+
+Arquivo:
+
+```txt
+examples/validar_usuarios.integra
+```
+
+Execução:
 
 ```bash
 integradsl examples/validar_usuarios.integra --outdir outputs
 ```
 
-### 3. `api_real_opcional.integra`
+No Windows:
 
-Exemplo opcional com API pública. Depende de internet no ambiente de execução.
+```powershell
+integradsl examples\validar_usuarios.integra --outdir outputs
+```
+
+Esse exemplo demonstra reutilização da linguagem em outro domínio de dados, validando usuários, e-mails e idade.
+
+Para visualizar o relatório:
+
+```bash
+python -m json.tool outputs/relatorio_validacao_usuarios.json
+```
+
+No Windows:
+
+```powershell
+python -m json.tool outputs\relatorio_validacao_usuarios.json
+```
+
+### 7. Teste com API externa real
+
+Arquivo:
+
+```txt
+examples/api_real_opcional.integra
+```
+
+Execução:
 
 ```bash
 integradsl examples/api_real_opcional.integra --outdir outputs
 ```
 
+No Windows:
+
+```powershell
+integradsl examples\api_real_opcional.integra --outdir outputs
+```
+
+Esse exemplo consome a API pública:
+
+```txt
+https://dummyjson.com/carts
+```
+
+O comando da DSL responsável pelo consumo da API é:
+
+```txt
+buscar resposta de GET "https://dummyjson.com/carts"
+```
+
+Para visualizar o relatório:
+
+```bash
+python -m json.tool outputs/relatorio_api_publica.json
+```
+
+No Windows:
+
+```powershell
+python -m json.tool outputs\relatorio_api_publica.json
+```
+
+No relatório, procure por uma mensagem semelhante a:
+
+```txt
+Requisição GET concluída: https://dummyjson.com/carts
+```
+
+Isso demonstra que a API externa foi realmente utilizada.
+
 ---
 
-## Por que a linguagem resolve um problema bem definido?
+## Visualização de resultados
 
-O problema resolvido é a automação de fluxos repetitivos de integração operacional. Esse tipo de tarefa aparece em diversos contextos reais:
+### Visualizar logs da execução
 
-- integração entre marketplace e ERP;
-- sincronização de pedidos;
-- validação de cadastros;
-- envio de dados para CRM;
-- conferência de dados antes de importação;
-- geração de logs e relatórios de falhas.
+No PowerShell:
 
-A IntegraDSL permite expressar esse processo de forma direta, usando comandos próprios do domínio, em vez de exigir que o usuário escreva todo o script Python manualmente.
+```powershell
+(Get-Content outputs\relatorio_sincronizacao_pedidos.json -Raw | ConvertFrom-Json).logs
+```
+
+Para o exemplo da API externa:
+
+```powershell
+(Get-Content outputs\relatorio_api_publica.json -Raw | ConvertFrom-Json).logs
+```
+
+### Visualizar contadores da execução
+
+```powershell
+(Get-Content outputs\relatorio_sincronizacao_pedidos.json -Raw | ConvertFrom-Json).contadores
+```
+
+Esse comando mostra contadores como:
+
+* registros processados;
+* registros salvos;
+* envios com sucesso;
+* falhas de validação;
+* falhas de envio.
+
+### Visualizar banco lógico
+
+```powershell
+(Get-Content outputs\relatorio_sincronizacao_pedidos.json -Raw | ConvertFrom-Json).banco_logico.pedidos_integrados
+```
+
+Esse comando mostra os registros salvos pela DSL na base lógica em memória.
+
+### Visualizar envios simulados
+
+```powershell
+(Get-Content outputs\relatorio_sincronizacao_pedidos.json -Raw | ConvertFrom-Json).envios
+```
+
+Esse comando mostra os envios executados pelo comando da DSL:
+
+```txt
+enviar POST "mock://erp/pedidos" com pedido
+```
+
+Endpoints iniciados por `mock://` são simulados para permitir que o projeto rode sem depender de sistemas externos reais.
 
 ---
 
-## Relação com os critérios de avaliação
+## Testes automatizados com Pytest
 
-### a) Eu consegui rodar o programa a partir das instruções do README?
+Execute:
 
-Sim. O README contém comandos para instalar dependências e executar exemplos.
+```bash
+pytest -q
+```
 
-### b) A linguagem foi implementada utilizando a estrutura típica de um compilador?
+Se houver problema de importação, use:
 
-Sim. O projeto possui gramática formal, análise léxica, análise sintática, AST, análise semântica, interpretador e tradutor.
+```bash
+PYTHONPATH=src pytest -q
+```
 
-### c) A linguagem foi bem definida na documentação?
+No Windows PowerShell:
 
-Sim. A documentação apresenta motivação, comandos, léxico, gramática resumida, semântica e exemplos.
+```powershell
+$env:PYTHONPATH="src"
+pytest -q
+```
 
-### d) A linguagem resolve de maneira criativa um problema bem definido?
+Saída esperada:
 
-Sim. A linguagem resolve o problema de automação de integrações entre sistemas, com validação, transformação, erro e relatório.
+```txt
+2 passed
+```
 
-### e) A linguagem contém estruturas novas além das linguagens mostradas na aula?
-
-Sim. A linguagem contém comandos específicos de integração, validação declarativa, tratamento de erro operacional, endpoints `mock://`, manipulação de JSON e geração de relatório.
+Os testes automatizados verificam se o parser aceita o exemplo principal e se a árvore sintática é gerada corretamente.
 
 ---
 
-## Observações finais
+## Testes de erro
 
-A IntegraDSL foi pensada para ser pequena o suficiente para ser implementada em um projeto acadêmico, mas complexa o suficiente para representar um problema real do mercado de computação.
+Os testes abaixo são úteis para demonstrar que a linguagem detecta problemas de sintaxe, semântica e execução.
 
-Ela pode ser expandida futuramente com:
+### 1. Erro sintático
 
-- conexão real com PostgreSQL;
-- autenticação por token;
-- integração com filas como RabbitMQ;
-- exportação para workflows do n8n;
-- suporte a arquivos CSV;
-- operadores lógicos `e` e `ou`;
-- funções reutilizáveis.
+Crie o arquivo:
+
+```txt
+examples/erro_sintatico.integra
+```
+
+Conteúdo:
+
+```txt
+fluxo "Erro Sintatico" {
+    configurar ambiente = "teste"
+    carregar resposta de arquivo "../data/pedidos.json"
+    extrair pedidos = resposta.carts
+
+    para cada pedido em pedidos {
+        validar pedido.id obrigatorio
+}
+```
+
+Execute:
+
+```bash
+integradsl examples/erro_sintatico.integra --tree --no-run
+```
+
+No Windows:
+
+```powershell
+integradsl examples\erro_sintatico.integra --tree --no-run
+```
+
+Esse teste deve gerar erro porque o bloco não foi fechado corretamente.
+
+### 2. Erro semântico
+
+Crie o arquivo:
+
+```txt
+examples/erro_semantico.integra
+```
+
+Conteúdo:
+
+```txt
+fluxo "Erro Semantico" {
+    extrair pedidos = resposta.carts
+    relatorio "erro_semantico.json"
+}
+```
+
+Execute:
+
+```bash
+integradsl examples/erro_semantico.integra --tree --no-run
+```
+
+No Windows:
+
+```powershell
+integradsl examples\erro_semantico.integra --tree --no-run
+```
+
+Esse programa é sintaticamente válido, mas semanticamente inválido, pois usa a variável `resposta` antes de ela ser definida.
+
+## Criando um novo programa IntegraDSL
+
+Para criar um novo teste sem alterar o código-fonte do interpretador, basta criar um novo arquivo `.integra` na pasta `examples/`.
+
+Exemplo:
+
+```txt
+examples/validar_produtos.integra
+```
+
+Conteúdo:
+
+```txt
+fluxo "Validar Produtos" {
+    carregar resposta de arquivo "../data/produtos_teste.json"
+    extrair produtos = resposta.produtos
+
+    para cada produto em produtos {
+        validar produto.id obrigatorio
+        validar produto.nome obrigatorio
+        validar produto.preco maior_que 0
+
+        se erro {
+            registrar "Produto inválido encontrado."
+            salvar_erro produto.id
+            continuar
+        }
+
+        definir produto.status = "valido"
+        salvar produto em "produtos_validos"
+        enviar POST "mock://estoque/produtos" com produto
+    }
+
+    relatorio "relatorio_produtos.json"
+}
+```
+
+Para executar:
+
+```bash
+integradsl examples/validar_produtos.integra --tokens --tree --outdir outputs
+```
+
+No Windows:
+
+```powershell
+integradsl examples\validar_produtos.integra --tokens --tree --outdir outputs
+```
+
+---
+
+## Observação importante sobre PowerShell e arquivos `.integra`
+
+Arquivos `.integra` devem conter **somente código da IntegraDSL**.
+
+Não coloque comandos do PowerShell dentro de arquivos `.integra`, como:
+
+```powershell
+$codigo = @'
+Out-File -Encoding utf8 examples\arquivo.integra
+Set-Content -Path "examples\arquivo.integra"
+```
+
+Esses comandos pertencem ao terminal PowerShell, não à linguagem IntegraDSL.
+
+Um arquivo `.integra` válido deve começar com:
+
+```txt
+fluxo "Nome do fluxo" {
+```
+
+Se o parser mostrar um erro como:
+
+```txt
+Expected one of:
+    * FLUXO
+```
+
+significa que o arquivo não começou com a palavra `fluxo` ou contém comandos que não pertencem à DSL.
+
+---
+
+## Execução alternativa sem o comando `integradsl`
+
+Se o comando `integradsl` não for reconhecido, execute diretamente pelo módulo Python.
+
+### Linux, macOS ou Codespaces
+
+```bash
+PYTHONPATH=src python -m integradsl examples/sincronizar_pedidos.integra --outdir outputs
+```
+
+### Windows PowerShell
+
+```powershell
+$env:PYTHONPATH="src"
+python -m integradsl examples\sincronizar_pedidos.integra --outdir outputs
+```
+
+---
+
+## Para demonstração completa
+
+Para demonstrar o projeto de forma completa, execute os comandos nesta ordem:
+
+### 1. Mostrar a ajuda da CLI
+
+```bash
+integradsl --help
+```
+
+### 2. Mostrar análise léxica
+
+```bash
+integradsl examples/sincronizar_pedidos.integra --tokens --no-run
+```
+
+### 3. Mostrar árvore sintática
+
+```bash
+integradsl examples/sincronizar_pedidos.integra --tree --no-run
+```
+
+### 4. Mostrar tradução didática para Python
+
+```bash
+integradsl examples/sincronizar_pedidos.integra --emit-python --no-run
+```
+
+### 5. Executar o programa principal
+
+```bash
+integradsl examples/sincronizar_pedidos.integra --outdir outputs
+```
+
+### 6. Executar exemplo com API externa
+
+```bash
+integradsl examples/api_real_opcional.integra --outdir outputs
+```
+
+### 7. Executar testes automatizados
+
+```bash
+pytest -q
+```
+
+Esse roteiro demonstra:
+
+* analisador léxico;
+* analisador sintático;
+* geração de árvore sintática;
+* análise semântica;
+* interpretação;
+* tradução orientada à sintaxe;
+* execução offline;
+* execução com API externa;
+* testes automatizados.
+
+---
+
+## Relação com os requisitos da atividade
+
+| Requisito                                         | Como o projeto atende                                                                |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Linguagem para tarefa tediosa de estágio/trabalho | automatiza fluxos repetitivos de integração entre sistemas                           |
+| Linguagem interpretada ou compilada               | a IntegraDSL é interpretada                                                          |
+| Analisador léxico definido formalmente            | implementado com Lark em `grammar.lark`                                              |
+| Analisador sintático definido formalmente         | implementado com Lark em `grammar.lark`                                              |
+| Uso da ferramenta Lark                            | usado em `parser.py`                                                                 |
+| Geração de árvore sintática                       | opção `--tree` da CLI                                                                |
+| Tradutor/interpretador orientado à sintaxe        | `interpreter.py` e `translator.py`                                                   |
+| Estrutura típica de compilador                    | lexer, parser, AST, semântica, interpretação                                         |
+| Execução no GitHub Codespaces                     | suportada via instalação Python e `.devcontainer/`                                   |
+| README com equipe, motivação, execução e exemplos | documentado neste arquivo                                                            |
+| Estruturas novas além da aula                     | comandos de domínio: `buscar`, `validar`, `salvar`, `enviar`, `se erro`, `relatorio` |
+
+---
+
+## Considerações finais
+
+A IntegraDSL demonstra como uma linguagem de domínio específico pode simplificar uma tarefa real do mercado: a automação de integrações entre sistemas.
+
+O projeto não se limita a uma linguagem simples com comandos básicos. Ele contém estruturas próprias do domínio de integração, como consumo de API, validação de dados, tratamento de erro, transformação de registros, simulação de envio e geração de relatório.
+
+Dessa forma, o projeto atende aos requisitos da atividade e apresenta uma implementação sistemática baseada em técnicas de compiladores e interpretadores.
