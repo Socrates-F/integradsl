@@ -10,7 +10,7 @@ from .interpreter import IntegraInterpreter, RuntimeFlowError
 from .parser import IntegraParser
 from .semantic import SemanticAnalyzer, SemanticError
 from .translator import PythonTranslator
-
+from integradsl.pretty_tree import print_tree
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -44,8 +44,7 @@ def main(argv: list[str] | None = None) -> int:
 
         tree = parser.parse_tree(source)
         if args.tree:
-            // print("\n=== ÁRVORE SINTÁTICA LARK ===")
-            //print_tree(tree)            
+           print_tree(tree)            
 
         ast_program = parser.parse_ast(source)
         SemanticAnalyzer().analyze(ast_program)
