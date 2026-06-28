@@ -22,7 +22,7 @@ O projeto foi desenvolvido seguindo a estrutura típica de um compilador/interpr
 
 * Claudio Roberto
 * Eduardo José
-* Erasmo Quixabeira
+* Erasmo Alves
 * Sócrates Farias
 
 
