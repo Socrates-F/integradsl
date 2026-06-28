@@ -341,29 +341,84 @@ outputs/relatorio_sincronizacao_pedidos.json
 
 ---
 
-## Testes e demonstrações possíveis
+## Exemplos e testes disponíveis
 
-A tabela abaixo resume os principais testes que podem ser executados no projeto. Eles demonstram as etapas de análise léxica, análise sintática, tradução, interpretação, uso de API externa, geração de relatórios e tratamento de erros.
+A pasta `examples/` contém programas escritos na IntegraDSL que demonstram diferentes comportamentos da linguagem. Alguns exemplos executam fluxos válidos, enquanto outros foram criados propositalmente para demonstrar erros sintáticos ou semânticos.
 
-> Nos comandos abaixo, em Windows use `examples\arquivo.integra`. Em Linux, macOS ou Codespaces use `examples/arquivo.integra`.
+> No Windows, use `examples\arquivo.integra`.
+> No Linux, macOS ou Codespaces, use `examples/arquivo.integra`.
 
-| Teste                          | O que demonstra                                                                     | Comando                                                                                          |
-| ------------------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Ajuda da CLI                   | Mostra os parâmetros disponíveis no interpretador.                                  | `integradsl --help`                                                                              |
-| Execução principal offline     | Executa o fluxo de sincronização de pedidos usando arquivo JSON local.              | `integradsl examples/sincronizar_pedidos.integra --outdir outputs`                               |
-| Análise léxica                 | Exibe os tokens reconhecidos pelo Lark.                                             | `integradsl examples/sincronizar_pedidos.integra --tokens --no-run`                              |
-| Análise sintática              | Exibe a árvore sintática gerada pelo Lark.                                          | `integradsl examples/sincronizar_pedidos.integra --tree --no-run`                                |
-| Tradução para Python           | Mostra uma tradução didática da DSL para Python.                                    | `integradsl examples/sincronizar_pedidos.integra --emit-python --no-run`                         |
-| Teste completo                 | Mostra tokens, árvore sintática, tradução e executa o programa.                     | `integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs` |
-| Validação de usuários          | Executa outro fluxo da DSL, validando usuários, e-mails e idade.                    | `integradsl examples/validar_usuarios.integra --outdir outputs`                                  |
-| API externa real               | Consome a API pública `https://dummyjson.com/carts` e processa os dados retornados. | `integradsl examples/api_real_opcional.integra --outdir outputs`                                 |
-| Visualizar relatório principal | Formata o relatório JSON gerado pelo exemplo principal.                             | `python -m json.tool outputs/relatorio_sincronizacao_pedidos.json`                               |
-| Visualizar relatório da API    | Formata o relatório JSON gerado pelo exemplo com API externa.                       | `python -m json.tool outputs/relatorio_api_publica.json`                                         |
-| Testes automatizados           | Executa os testes automatizados do projeto com Pytest.                              | `pytest -q`                                                                                      |
-| Teste de erro sintático        | Verifica se o parser rejeita um programa com bloco mal fechado.                     | `integradsl examples/erro_sintatico.integra --tree --no-run`                                     |
-| Teste de erro semântico        | Verifica se a análise semântica detecta variável usada antes de ser definida.       | `integradsl examples/erro_semantico.integra --tree --no-run`                                     |
+| Arquivo                       | Tipo de teste              | Descrição                                                                                                                                                                             | Comando                                                            |
+| ----------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `sincronizar_pedidos.integra` | Execução principal offline | Executa o fluxo principal da DSL usando um arquivo JSON local. Carrega pedidos, valida campos, define prioridade, salva registros válidos, simula envio para um ERP e gera relatório. | `integradsl examples/sincronizar_pedidos.integra --outdir outputs` |
+| `validar_usuarios.integra`    | Validação de dados         | Executa um fluxo alternativo para validar usuários. Testa campos como `id`, `email` e `idade`, demonstrando reutilização da linguagem em outro conjunto de dados.                     | `integradsl examples/validar_usuarios.integra --outdir outputs`    |
+| `api_real_opcional.integra`   | API externa real           | Consome uma API pública real usando o comando `buscar`. Demonstra que a DSL consegue obter dados externos, processá-los, validá-los e gerar relatório.                                | `integradsl examples/api_real_opcional.integra --outdir outputs`   |
+| `api_get_post_real.integra`   | GET e POST externos        | Testa uma requisição `GET` em API pública e um envio `POST` para um endpoint externo de teste. Depende de conexão com a internet.                                                     | `integradsl examples/api_get_post_real.integra --outdir outputs`   |
+| `erro_sintatico.integra`      | Erro sintático             | Programa propositalmente incorreto para demonstrar que o analisador sintático rejeita código mal formado, como blocos não fechados corretamente.                                      | `integradsl examples/erro_sintatico.integra --tree --no-run`       |
+| `erro_semantico.integra`      | Erro semântico             | Programa sintaticamente válido, mas semanticamente incorreto. Demonstra que a análise semântica detecta o uso de variável antes de sua definição.                                     | `integradsl examples/erro_semantico.integra --tree --no-run`       |
 
-### A seguir, segue as demais descrições dos testes para melhor visualização do escopo.
+---
+
+## Testes de etapas do compilador/interpretador
+
+Além de executar os programas da pasta `examples/`, também é possível testar partes específicas do compilador/interpretador.
+
+| Teste                | O que demonstra                                                 | Comando                                                                                          |
+| -------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Ajuda da CLI         | Mostra os comandos disponíveis na ferramenta.                   | `integradsl --help`                                                                              |
+| Análise léxica       | Exibe os tokens reconhecidos pelo Lark.                         | `integradsl examples/sincronizar_pedidos.integra --tokens --no-run`                              |
+| Análise sintática    | Exibe a árvore sintática gerada pelo Lark.                      | `integradsl examples/sincronizar_pedidos.integra --tree --no-run`                                |
+| Tradução para Python | Mostra uma tradução didática da DSL para Python.                | `integradsl examples/sincronizar_pedidos.integra --emit-python --no-run`                         |
+| Teste completo       | Mostra tokens, árvore sintática, tradução e executa o programa. | `integradsl examples/sincronizar_pedidos.integra --tokens --tree --emit-python --outdir outputs` |
+| Testes automatizados | Executa os testes automatizados com Pytest.                     | `pytest -q`                                                                                      |
+
+---
+
+## Visualização dos relatórios
+
+Após executar um fluxo com `--outdir outputs`, os relatórios são gerados na pasta `outputs/`.
+
+Para visualizar o relatório principal:
+
+```bash
+python -m json.tool outputs/relatorio_sincronizacao_pedidos.json
+```
+
+Para visualizar o relatório da API pública:
+
+```bash
+python -m json.tool outputs/relatorio_api_publica.json
+```
+
+No Windows PowerShell também é possível visualizar partes específicas do relatório:
+
+```powershell
+(Get-Content outputs\relatorio_sincronizacao_pedidos.json -Raw | ConvertFrom-Json).logs
+```
+
+```powershell
+(Get-Content outputs\relatorio_sincronizacao_pedidos.json -Raw | ConvertFrom-Json).contadores
+```
+
+```powershell
+(Get-Content outputs\relatorio_sincronizacao_pedidos.json -Raw | ConvertFrom-Json).banco_logico
+```
+
+---
+
+## Observação sobre os testes de erro
+
+Os arquivos `erro_sintatico.integra` e `erro_semantico.integra` foram criados para falhar propositalmente.
+
+Eles são importantes porque demonstram que o projeto diferencia:
+
+* erro léxico/sintático: problema na forma do programa;
+* erro semântico: programa escrito corretamente, mas com significado inválido;
+* erro em tempo de execução: problema que ocorre durante a execução do fluxo.
+
+Portanto, ao executar esses arquivos e receber uma mensagem de erro, isso indica que o compilador/interpretador está detectando corretamente programas inválidos.
+
+### A seguir, segue as demais descrições dos testes vistos acima para melhor visualização de seus escopos.
 
 ### 1. Ajuda da CLI
 
